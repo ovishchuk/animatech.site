@@ -17,7 +17,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 DOMAIN="animatech.duckdns.org"
-PROJECT_DIR="/var/www/animatech"  # Default, will be updated after functions are defined
+PROJECT_DIR="/var/www/animatech.site"  # Default, will be updated after functions are defined
 SERVICE_NAME="animatech"
 NODE_VERSION="18.x"
 REPO_URL="https://github.com/ovishchuk/animatech.site.git"
@@ -162,8 +162,13 @@ setup_project_directory() {
         
         log "Project directory created: $PROJECT_DIR"
     else
-        # Create logs directory in current location
+        # Create logs directory in current location and set proper permissions
         mkdir -p logs
+        # Ensure current directory has proper permissions
+        if [ "$(stat -c '%U:%G' .)" != "$PROJECT_USER:$PROJECT_GROUP" ]; then
+            log "Fixing ownership of current directory..."
+            sudo chown -R "$PROJECT_USER:$PROJECT_GROUP" .
+        fi
         log "Using current directory, created logs subdirectory"
     fi
 }
