@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - CyberDev</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <style>
+        .admin-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background: rgba(26, 26, 26, 0.9);
+            border-right: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 2rem 1rem;
+        }
+        
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .stat-card {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+        
+        .table-container {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .cyber-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .cyber-table th {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+            color: var(--neon-cyan);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .cyber-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .cyber-table tr:hover {
+            background: rgba(0, 255, 255, 0.05);
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background: rgba(255, 255, 0, 0.2);
+            color: var(--neon-yellow);
+            border: 1px solid rgba(255, 255, 0, 0.3);
+        }
+        
+        .status-processing {
+            background: rgba(0, 255, 255, 0.2);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .status-completed {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+        
+        .status-cancelled {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff0000;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--neon-cyan);
+            border-left: 3px solid var(--neon-cyan);
+        }
+        
+        .btn-neon {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-neon:hover {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: var(--dark-secondary);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 5% auto;
+            position: relative;
+        }
+        
+        /* Fix for input fields */
+        .cyber-input,
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        textarea,
+        select {
+            background: rgba(26, 26, 26, 0.8) !important;
+            border: 1px solid rgba(0, 255, 255, 0.3) !important;
+            border-radius: 4px !important;
+            padding: 12px !important;
+            color: #ffffff !important;
+            transition: all 0.3s ease !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none !important;
+            border-color: var(--neon-cyan) !important;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3) !important;
+        }
+        
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder,
+        input[type="email"]::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+        
+        /* Status select styling */
+        .status-select {
+            background: rgba(26, 26, 26, 0.8) !important;
+            border: 1px solid rgba(0, 255, 255, 0.3) !important;
+            border-radius: 4px !important;
+            padding: 8px !important;
+            color: #ffffff !important;
+            cursor: pointer !important;
+        }
+        
+        .status-select option {
+            background: #1a1a1a !important;
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="login-screen" class="admin-container flex items-center justify-center">
+            <div class="login-form">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-neon-cyan rounded-full mx-auto mb-4 animate-glow"></div>
+                    <h1 class="text-3xl font-bold text-neon-cyan mb-2">Admin Panel</h1>
+                    <p class="text-gray-400">CyberDev Control Center</p>
+                </div>
+                
+                <form id="login-form">
+                    <div class="mb-6">
+                        <label class="block text-neon-cyan mb-2">Username</label>
+                        <input type="text" id="username" required 
+                                   class="cyber-input">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-neon-cyan mb-2">Password</label>
+                        <input type="password" id="password" required 
+                                   class="cyber-input">
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full py-3 bg-neon-cyan text-dark-bg font-bold rounded-lg hover:bg-neon-cyan/80 transition-all duration-300">
+                        Login
+                    </button>
+                </form>
+                
+                <div id="login-error" class="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg text-red-400 hidden">
+                    Invalid credentials
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dashboard Screen -->
+        <div id="dashboard-screen" class="hidden">
+            <div class="dashboard-grid">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="flex items-center mb-8">
+                        <div class="w-8 h-8 bg-neon-cyan rounded-full mr-3"></div>
+                        <span class="text-xl font-bold text-neon-cyan">Admin</span>
+                    </div>
+                    
+                    <nav>
+                        <a href="#" class="nav-item active" data-page="dashboard">
+                            <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                            Dashboard
+                        </a>
+                        <a href="#" class="nav-item" data-page="orders">
+                            <i data-lucide="shopping-cart" class="w-5 h-5 mr-3"></i>
+                            Orders
+                        </a>
+                        <a href="#" class="nav-item" data-page="blog">
+                            <i data-lucide="file-text" class="w-5 h-5 mr-3"></i>
+                            Blog Posts
+                        </a>
+                        <a href="#" class="nav-item" data-page="settings">
+                            <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                            Settings
+                        </a>
+                        <a href="#" class="nav-item" id="logout-btn">
+                            <i data-lucide="log-out" class="w-5 h-5 mr-3"></i>
+                            Logout
+                        </a>
+                    </nav>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Dashboard Page -->
+                    <div id="dashboard-page" class="page">
+                        <h1 class="text-3xl font-bold text-neon-cyan mb-8">Dashboard</h1>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                            <div class="stat-card">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-gray-400 text-sm">Total Orders</p>
+                                        <p class="text-2xl font-bold text-neon-cyan" id="total-orders">0</p>
+                                    </div>
+                                    <i data-lucide="shopping-cart" class="w-8 h-8 text-neon-cyan/50"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-gray-400 text-sm">Pending</p>
+                                        <p class="text-2xl font-bold text-neon-yellow" id="pending-orders">0</p>
+                                    </div>
+                                    <i data-lucide="clock" class="w-8 h-8 text-neon-yellow/50"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-gray-400 text-sm">Completed</p>
+                                        <p class="text-2xl font-bold text-green-400" id="completed-orders">0</p>
+                                    </div>
+                                    <i data-lucide="check-circle" class="w-8 h-8 text-green-400/50"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-gray-400 text-sm">Blog Posts</p>
+                                        <p class="text-2xl font-bold text-neon-magenta" id="total-posts">0</p>
+                                    </div>
+                                    <i data-lucide="file-text" class="w-8 h-8 text-neon-magenta/50"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="table-container">
+                                <h2 class="text-xl font-bold text-neon-cyan mb-4 p-4">Recent Orders</h2>
+                                <div id="recent-orders">
+                                    <p class="text-gray-400 p-4">Loading...</p>
+                                </div>
+                            </div>
+                            
+                            <div class="table-container">
+                                <h2 class="text-xl font-bold text-neon-cyan mb-4 p-4">Recent Blog Posts</h2>
+                                <div id="recent-posts">
+                                    <p class="text-gray-400 p-4">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Orders Page -->
+                    <div id="orders-page" class="page hidden">
+                        <div class="flex justify-between items-center mb-8">
+                            <h1 class="text-3xl font-bold text-neon-cyan">Orders Management</h1>
+                            <button class="btn-neon" onclick="refreshOrders()">
+                                <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
+                                Refresh
+                            </button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="cyber-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Service</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orders-table">
+                                    <tr>
+                                        <td colspan="7" class="text-center text-gray-400 py-8">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Blog Page -->
+                    <div id="blog-page" class="page hidden">
+                        <div class="flex justify-between items-center mb-8">
+                            <h1 class="text-3xl font-bold text-neon-cyan">Blog Management</h1>
+                            <button class="btn-neon" onclick="openBlogModal()">
+                                <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                                New Post
+                            </button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="cyber-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Updated</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="blog-table">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-gray-400 py-8">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <!-- Settings Page -->
+                    <div id="settings-page" class="page hidden">
+                        <h1 class="text-3xl font-bold text-neon-cyan mb-8">Settings</h1>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <!-- Change Username -->
+                            <div class="table-container">
+                                <h2 class="text-xl font-bold text-neon-cyan mb-4 p-4">Change Username</h2>
+                                <form id="username-form" class="p-4">
+                                    <div class="mb-4">
+                                        <label class="block text-neon-cyan mb-2">Current Username</label>
+                                        <input type="text" id="current-username" readonly 
+                                               class="cyber-input opacity-50">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label class="block text-neon-cyan mb-2">New Username</label>
+                                        <input type="text" id="new-username" required minlength="3"
+                                               class="cyber-input">
+                                    </div>
+                                    
+                                    <button type="submit" 
+                                            class="px-4 py-2 bg-neon-cyan text-dark-bg font-bold rounded-lg hover:bg-neon-cyan/80 transition-all duration-300">
+                                        Update Username
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <!-- Change Password -->
+                            <div class="table-container">
+                                <h2 class="text-xl font-bold text-neon-cyan mb-4 p-4">Change Password</h2>
+                                <form id="password-form" class="p-4">
+                                    <div class="mb-4">
+                                        <label class="block text-neon-cyan mb-2">Current Password</label>
+                                        <input type="password" id="current-password" required
+                                               class="cyber-input">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label class="block text-neon-cyan mb-2">New Password</label>
+                                        <input type="password" id="new-password" required minlength="6"
+                                               class="cyber-input">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label class="block text-neon-cyan mb-2">Confirm New Password</label>
+                                        <input type="password" id="confirm-password" required minlength="6"
+                                               class="cyber-input">
+                                    </div>
+                                    
+                                    <button type="submit" 
+                                            class="px-4 py-2 bg-neon-cyan text-dark-bg font-bold rounded-lg hover:bg-neon-cyan/80 transition-all duration-300">
+                                        Update Password
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- Security Info -->
+                        <div class="table-container mt-8">
+                            <h2 class="text-xl font-bold text-neon-cyan mb-4 p-4">Security Information</h2>
+                            <div class="p-4 space-y-4">
+                                <div class="flex items-center">
+                                    <i data-lucide="info" class="w-5 h-5 text-neon-cyan mr-3"></i>
+                                    <p class="text-gray-300">Username must be at least 3 characters long</p>
+                                </div>
+                                <div class="flex items-center">
+                                    <i data-lucide="info" class="w-5 h-5 text-neon-cyan mr-3"></i>
+                                    <p class="text-gray-300">Password must be at least 6 characters long</p>
+                                </div>
+                                <div class="flex items-center">
+                                    <i data-lucide="shield" class="w-5 h-5 text-neon-yellow mr-3"></i>
+                                    <p class="text-gray-300">After changing username, you'll need to login again</p>
+                                </div>
+                                <div class="flex items-center">
+                                    <i data-lucide="alert-triangle" class="w-5 h-5 text-neon-yellow mr-3"></i>
+                                    <p class="text-gray-300">Make sure to use a strong password with mixed characters</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Blog Modal -->
+    <div id="blog-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold text-neon-cyan mb-6">Blog Post</h2>
+            
+            <form id="blog-form">
+                <input type="hidden" id="blog-id">
+                
+                <div class="mb-4">
+                    <label class="block text-neon-cyan mb-2">Title</label>
+                    <input type="text" id="blog-title" required 
+                           class="cyber-input">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-neon-cyan mb-2">Excerpt</label>
+                    <input type="text" id="blog-excerpt" 
+                           class="cyber-input">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-neon-cyan mb-2">Content</label>
+                    <textarea id="blog-content" rows="10" required 
+                              class="cyber-input"></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-neon-cyan mb-2">Status</label>
+                    <select id="blog-status" 
+                            class="cyber-input">
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                    </select>
+                </div>
+                
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="closeBlogModal()" 
+                            class="btn-neon">Cancel</button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-neon-cyan text-dark-bg font-bold rounded-lg hover:bg-neon-cyan/80 transition-all duration-300">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="../js/admin.js"></script>
+</body>
+</html>
