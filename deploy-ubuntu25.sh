@@ -17,14 +17,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 DOMAIN="animatech.duckdns.org"
-# Use current directory if we're in a git repo, otherwise use default
-if [ -d ".git" ]; then
-    PROJECT_DIR=$(pwd)
-    log "Using current directory as project directory: $PROJECT_DIR"
-else
-    PROJECT_DIR="/var/www/animatech"
-    log "Using default project directory: $PROJECT_DIR"
-fi
+PROJECT_DIR="/var/www/animatech"  # Default, will be updated after functions are defined
 SERVICE_NAME="animatech"
 NODE_VERSION="18.x"
 REPO_URL="https://github.com/ovishchuk/animatech.site.git"
@@ -49,6 +42,14 @@ error() {
     echo -e "${RED}[$(date +'%Y-%m-%d %H:%M:%S')] ERROR: $1${NC}"
     exit 1
 }
+
+# Update PROJECT_DIR based on current directory (now that log() is defined)
+if [ -d ".git" ]; then
+    PROJECT_DIR=$(pwd)
+    log "Using current directory as project directory: $PROJECT_DIR"
+else
+    log "Using default project directory: $PROJECT_DIR"
+fi
 
 check_sudo() {
     if ! sudo -n true 2>/dev/null; then
