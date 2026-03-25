@@ -393,6 +393,44 @@ test_deployment() {
         log "✓ Animatech service is running"
     else
         error "✗ Animatech service failed to start"
+        log "=== SERVICE STATUS ==="
+        sudo systemctl status animatech --no-pager -l || true
+        log "=== SERVICE LOGS ==="
+        sudo journalctl -u animatech -n 20 --no-pager || true
+        log "=== CHECKING COMMON ISSUES ==="
+        
+        # Check if Node.js is installed
+        if command -v node >/dev/null 2>&1; then
+            log "✓ Node.js is installed: $(node --version)"
+        else
+            error "✗ Node.js is not installed"
+        fi
+        
+        # Check if app.js exists
+        if [ -f "$PROJECT_DIR/server/app.js" ]; then
+            log "✓ app.js exists"
+        else
+            error "✗ app.js not found at $PROJECT_DIR/server/app.js"
+        fi
+        
+        # Check if node_modules exists
+        if [ -d "$PROJECT_DIR/server/node_modules" ]; then
+            log "✓ node_modules exists"
+        else
+            error "✗ node_modules not found at $PROJECT_DIR/server/node_modules"
+        fi
+        
+        # Check if .env exists
+        if [ -f "$PROJECT_DIR/server/.env" ]; then
+            log "✓ .env file exists"
+        else
+            error "✗ .env file not found at $PROJECT_DIR/server/.env"
+        fi
+        
+        # Try to run app.js manually to see the error
+        log "=== TESTING MANUAL RUN ==="
+        cd "$PROJECT_DIR/server"
+        timeout 10 node app.js 2>&1 || log "Manual run failed (expected for service test)"
     fi
     
     # Test Nginx
@@ -406,7 +444,7 @@ test_deployment() {
     if curl -s http://localhost:3000 >/dev/null; then
         log "✓ Node.js application responding on port 3000"
     else
-        error "✗ Node.js application not responding"
+        warn "⚠ Node.js application not responding on port 3000"
     fi
     
     # Test external connection
