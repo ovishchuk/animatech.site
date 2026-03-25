@@ -74,29 +74,64 @@ check_ubuntu_version() {
 }
 
 install_system_dependencies() {
-    log "Installing system dependencies..."
+    log "Checking system dependencies..."
     
-    # Update package lists
-    sudo apt update
+    # List of required packages
+    local required_packages=("curl" "wget" "git" "nginx" "ufw" "software-properties-common" 
+                             "apt-transport-https" "ca-certificates" "gnupg" "lsb-release" "build-essential")
     
-    # Install essential packages
-    sudo apt install -y curl wget git nginx ufw software-properties-common \
-        apt-transport-https ca-certificates gnupg lsb-release build-essential
+    local packages_to_install=()
     
-    log "System dependencies installed successfully"
+    # Check each package
+    for package in "${required_packages[@]}"; do
+        if ! dpkg -l | grep -q "^ii  $package "; then
+            packages_to_install+=("$package")
+            log "Package $package not found, will install"
+        else
+            log "✓ Package $package is already installed"
+        fi
+    done
+    
+    # Install missing packages
+    if [ ${#packages_to_install[@]} -gt 0 ]; then
+        log "Installing missing packages: ${packages_to_install[*]}"
+        sudo apt update
+        sudo apt install -y "${packages_to_install[@]}"
+    else
+        log "✓ All required packages are already installed"
+    fi
+    
+    log "System dependencies check completed"
 }
 
 install_nodejs() {
-    log "Installing Node.js $NODE_VERSION..."
+    log "Checking Node.js installation..."
     
-    # Remove old Node.js if exists
+    # Check if Node.js is already installed with correct version
     if command -v node >/dev/null 2>&1; then
-        log "Removing existing Node.js installation..."
-        sudo apt remove -y nodejs npm || true
-        sudo rm -rf /usr/local/lib/node_modules || true
-        sudo rm -rf /usr/local/bin/node || true
-        sudo rm -rf /usr/local/bin/npm || true
+        local current_node_version=$(node --version | sed 's/v//')
+        local target_version=$(echo $NODE_VERSION | sed 's/.x$//')
+        
+        log "Current Node.js version: $(node --version)"
+        log "Target version: $NODE_VERSION"
+        
+        # Check if current version matches target major version
+        if [[ "$current_node_version" == "$target_version"* ]]; then
+            log "✓ Node.js $current_node_version is already installed and matches target version"
+            local npm_version=$(npm --version)
+            log "✓ npm $npm_version is already installed"
+            return 0
+        else
+            log "⚠ Node.js version $current_node_version doesn't match target $NODE_VERSION, updating..."
+            # Remove old version
+            sudo apt remove -y nodejs npm || true
+            sudo rm -rf /usr/local/lib/node_modules || true
+            sudo rm -rf /usr/local/bin/node || true
+            sudo rm -rf /usr/local/bin/npm || true
+        fi
     fi
+    
+    log "Installing Node.js $NODE_VERSION..."
     
     # Add NodeSource repository
     curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION} | sudo -E bash -
@@ -107,8 +142,8 @@ install_nodejs() {
     # Verify installation
     local node_version=$(node --version)
     local npm_version=$(npm --version)
-    log "Node.js installed: $node_version"
-    log "npm installed: $npm_version"
+    log "✓ Node.js installed: $node_version"
+    log "✓ npm installed: $npm_version"
 }
 
 setup_project_directory() {
@@ -142,7 +177,21 @@ clone_repository() {
         
         # Install/update npm dependencies
         cd server
-        sudo -u "$PROJECT_USER" npm install
+        log "Checking npm dependencies..."
+        if [ -f "package.json" ]; then
+            # Check if node_modules exists and is recent
+            if [ -d "node_modules" ] && [ "package.json" -nt "node_modules" ]; then
+                log "package.json is newer than node_modules, updating dependencies..."
+                sudo -u "$PROJECT_USER" npm install
+            elif [ ! -d "node_modules" ]; then
+                log "Installing npm dependencies..."
+                sudo -u "$PROJECT_USER" npm install
+            else
+                log "✓ npm dependencies are up to date"
+            fi
+        else
+            warn "package.json not found in server directory"
+        fi
     elif [ -d "$PROJECT_DIR/.git" ]; then
         log "Repository already exists in project directory, pulling latest changes..."
         # Change to project directory
@@ -154,7 +203,21 @@ clone_repository() {
         
         # Install/update npm dependencies
         cd server
-        sudo -u "$PROJECT_USER" npm install
+        log "Checking npm dependencies..."
+        if [ -f "package.json" ]; then
+            # Check if node_modules exists and is recent
+            if [ -d "node_modules" ] && [ "package.json" -nt "node_modules" ]; then
+                log "package.json is newer than node_modules, updating dependencies..."
+                sudo -u "$PROJECT_USER" npm install
+            elif [ ! -d "node_modules" ]; then
+                log "Installing npm dependencies..."
+                sudo -u "$PROJECT_USER" npm install
+            else
+                log "✓ npm dependencies are up to date"
+            fi
+        else
+            warn "package.json not found in server directory"
+        fi
     else
         log "Cloning repository for the first time..."
         # Clone repository to project directory
@@ -163,6 +226,7 @@ clone_repository() {
         
         # Install/update npm dependencies
         cd server
+        log "Installing npm dependencies for fresh clone..."
         sudo -u "$PROJECT_USER" npm install
     fi
     
