@@ -88,6 +88,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Re-initialize Lucide icons after dynamic content
     lucide.createIcons();
     
+    // Initialize animations from animations.js
+    if (typeof createCircuitBoard === 'function') {
+        createCircuitBoard();
+    }
+    
+    // Initialize particle system for hero section
+    const heroSection = document.getElementById('home');
+    if (heroSection && typeof ParticleSystem === 'function') {
+        new ParticleSystem(heroSection);
+    }
+    
+    // Add glitch effect to neon text
+    const neonTexts = document.querySelectorAll('.text-neon-glow');
+    if (typeof addGlitchEffect === 'function') {
+        neonTexts.forEach(text => {
+            addGlitchEffect(text);
+        });
+    }
+    
+    // Initialize neon signs controller
+    if (typeof NeonSignsController === 'function') {
+        new NeonSignsController();
+    }
+    
+    // Initialize parallax effects
+    if (typeof initParallax === 'function') {
+        initParallax();
+    }
+    
+    // Initialize custom cursor
+    if (window.innerWidth > 768 && typeof initCustomCursor === 'function') {
+        initCustomCursor();
+    }
+    
     // Add entrance animations
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
