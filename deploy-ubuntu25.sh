@@ -277,6 +277,19 @@ EOF
     else
         log "Environment file already exists, skipping creation"
     fi
+    
+    # Initialize database if it doesn't exist
+    log "Initializing database..."
+    sudo -u "$PROJECT_USER" npm run init-db 2>/dev/null || {
+        log "Database initialization completed or already exists"
+    }
+    
+    # Ensure proper permissions for database files
+    if [ -f "database.sqlite" ]; then
+        sudo chown "$PROJECT_USER:$PROJECT_GROUP" database.sqlite
+        sudo chmod 664 database.sqlite
+        log "Database permissions set"
+    fi
 }
 
 setup_nginx() {
@@ -335,8 +348,8 @@ ExecStart=/usr/bin/node app.js
 Restart=always
 RestartSec=10
 Environment=NODE_ENV=production
-StandardOutput=syslog
-StandardError=syslog
+StandardOutput=journal
+StandardError=journal
 SyslogIdentifier=animatech
 
 # Security settings
@@ -344,7 +357,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=$PROJECT_DIR/logs
+ReadWritePaths=$PROJECT_DIR/logs $PROJECT_DIR/server
 
 [Install]
 WantedBy=multi-user.target
