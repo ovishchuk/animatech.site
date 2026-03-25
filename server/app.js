@@ -41,7 +41,13 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '../html')));
+app.use(express.static(path.join(__dirname, '../html'), {
+    setHeaders: (res, path) => {
+        if (path.endsWith('.png')) {
+            res.setHeader('Cache-Control', 'public, max-age=0'); // No caching during development
+        }
+    }
+}));
 
 // JWT middleware
 const authenticateToken = (req, res, next) => {
@@ -290,10 +296,11 @@ async function startServer() {
         await db.initialize();
         
         app.listen(PORT, () => {
-            console.log(`🚀 CyberDev server running on port ${PORT}`);
+            console.log(`🚀 Animatech server running on port ${PORT}`);
             console.log(`📱 Admin panel: http://localhost:${PORT}/admin`);
             console.log(`🌐 Website: http://localhost:${PORT}`);
             console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+            console.log(`🤖 Living AI & Robotics Platform`);
         });
     } catch (error) {
         console.error('Failed to start server:', error);

@@ -37,8 +37,7 @@ coverage/
 .nyc_output
 
 # Temporary folders
-tmp/
-temp/
+# temp/
 *.tmp
 
 # OS generated files

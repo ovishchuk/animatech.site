@@ -540,13 +540,13 @@ function showMessage(message, type) {
     `;
     
     if (type === 'success') {
-        messageDiv.style.background = 'rgba(0, 255, 0, 0.1)';
-        messageDiv.style.border = '1px solid rgba(0, 255, 0, 0.3)';
-        messageDiv.style.color = '#00ff00';
+        messageDiv.style.background = 'rgba(0, 204, 170, 0.1)';
+        messageDiv.style.border = '1px solid rgba(0, 204, 170, 0.3)';
+        messageDiv.style.color = '#00ccaa';
     } else {
-        messageDiv.style.background = 'rgba(255, 0, 0, 0.1)';
-        messageDiv.style.border = '1px solid rgba(255, 0, 0, 0.3)';
-        messageDiv.style.color = '#ff0000';
+        messageDiv.style.background = 'rgba(255, 0, 255, 0.1)';
+        messageDiv.style.border = '1px solid rgba(255, 0, 255, 0.3)';
+        messageDiv.style.color = '#ff00ff';
     }
     
     document.body.appendChild(messageDiv);

@@ -1,13 +1,15 @@
-# CyberDev Personal Website
+# Animatech - Living AI & Robotics
 
-A cyberpunk-style personal portfolio website with 3D printing services and admin panel.
+A cyberpunk-style platform where robotics, software, and AI come to life with soul and personality.
 
 ## 🚀 Features
 
 - **Cyberpunk Design**: Neon effects, dark theme, responsive layout
-- **Personal Portfolio**: About, services, blog, and gaming sections
-- **3D Printing Services**: Order management system with status tracking
-- **Admin Panel**: Full CRUD operations for orders and blog posts
+- **Living Technologies**: AI and robotics solutions with personality
+- **Personal Portfolio**: About, services, blog, and projects sections
+- **AI Services**: Advanced AI development and consulting
+- **Robotics Solutions**: Custom robotics and automation
+- **Admin Panel**: Full CRUD operations for projects and blog posts
 - **Authentication**: Secure JWT-based admin authentication
 - **Responsive Design**: Mobile-friendly interface
 
@@ -35,7 +37,7 @@ A cyberpunk-style personal portfolio website with 3D printing services and admin
 ## 📁 Project Structure
 
 ```
-ovishchuk.duckdns.org/
+animatech.site/
 ├── html/                 # Frontend files
 │   ├── css/             # Stylesheets
 │   ├── js/              # JavaScript files
@@ -58,8 +60,8 @@ ovishchuk.duckdns.org/
 ### Setup
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/ovishchuk.site.git
-cd ovishchuk.site
+git clone https://github.com/yourusername/animatech.site.git
+cd animatech.site
 
 # Install dependencies
 cd server
@@ -95,10 +97,10 @@ Default credentials:
 ### Authentication
 - `POST /api/login` - Admin login
 
-### Orders
-- `GET /api/orders` - Get all orders (admin)
-- `POST /api/orders` - Create new order (public)
-- `PUT /api/orders/:id/status` - Update order status (admin)
+### Projects
+- `GET /api/projects` - Get all projects (admin)
+- `POST /api/projects` - Create new project (public)
+- `PUT /api/projects/:id/status` - Update project status (admin)
 
 ### Blog
 - `GET /api/blog` - Get published posts (public)
@@ -111,12 +113,24 @@ Default credentials:
 - `PUT /api/admin/username` - Update admin username
 - `PUT /api/admin/password` - Update admin password
 
+## 🎨 Brand Colors
+
+Animatech uses three signature neon colors that represent our philosophy of living technology:
+
+- **Neon Cyan**: `#00ffff` - Pure energy and innovation
+- **Neon Magenta**: `#ff00ff` - Creativity and human touch
+- **Neon Accent**: `#00ccaa` - Harmony and balance
+
+These colors are used throughout our platform to create a cohesive cyberpunk aesthetic that represents the fusion of technology and life.
+
+For detailed color guidelines, see [BRAND_COLORS.md](BRAND_COLORS.md).
+
 ## 🎨 Customization
 
 ### Colors
 - Primary Neon: `#00ffff` (cyan)
 - Secondary Neon: `#ff00ff` (magenta)
-- Accent Neon: `#ffff00` (yellow)
+- Accent Neon: `#00ccaa` (accent)
 - Dark Background: `#0a0a0a`
 - Secondary Dark: `#1a1a1a`
 
@@ -156,14 +170,18 @@ sudo systemctl reload nginx
 - Production: Port 80 via Nginx
 - Development: Port 3000 direct
 
+## 🤖 Philosophy
+
+At Animatech, we believe that technology isn't just code and circuits—it's alive. We approach robotics, software development, and artificial intelligence as living entities with soul and personality. Our mission is to breathe life into technology, creating solutions that not only function but feel, adapt, and evolve.
+
 ## 📄 License
 
 MIT License - see LICENSE file for details
 
 ## 👤 Author
 
-CyberDev - [ovishchuk.duckdns.org](https://ovishchuk.duckdns.org)
+Animatech - [ovishchuk.duckdns.org](https://ovishchuk.duckdns.org)
 
 ---
 
-**Built with ❤️ and neon lights!**
+**Built with ❤️ and living technology!**

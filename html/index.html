@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberDev | IT Specialist & 3D Printing</title>
-    <meta name="description" content="Особистий сайт IT-спеціаліста. Послуги 3D друку, Linux консалтинг, блог про технології.">
+    <title>Animatech | Living AI & Robotics</title>
+    <meta name="description" content="Інноваційні рішення в робототехніці, ПЗ та ШІ. Ми надаємо технологіям душу та особистість.">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,7 +23,7 @@
                     colors: {
                         'neon-cyan': '#00ffff',
                         'neon-magenta': '#ff00ff',
-                        'neon-yellow': '#ffff00',
+                        'neon-accent': '#00ccaa',
                         'dark-bg': '#0a0a0a',
                         'dark-secondary': '#1a1a1a'
                     },
@@ -49,8 +49,12 @@
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 bg-neon-cyan rounded-full animate-glow"></div>
-                    <span class="text-xl font-bold text-neon-cyan">CyberDev</span>
+                    <a href="#home" class="flex items-center space-x-2">
+                        <div class="w-8 h-8 overflow-hidden">
+                            <img src="logo.png" alt="Animatech" class="w-6 h-6 object-contain">
+                        </div>
+                        <span class="text-xl font-bold text-neon-cyan animatech-text">Animatech</span>
+                    </a>
                 </div>
                 
                 <!-- Desktop Navigation -->
@@ -93,24 +97,23 @@
         <!-- Hero Content -->
         <div class="relative z-10 text-center px-4">
             <div class="mb-8">
-                <div class="inline-block p-1 bg-neon-cyan/20 rounded-full animate-pulse-slow">
-                    <div class="w-32 h-32 bg-dark-secondary rounded-full flex items-center justify-center border-2 border-neon-cyan">
-                        <i data-lucide="terminal" class="w-16 h-16 text-neon-cyan"></i>
+                <div class="inline-block p-1 animate-pulse-slow">
+                    <div class="w-[512px] h-[512px] flex items-center justify-center overflow-hidden">
+                        <img src="logo.png" alt="Animatech Logo" class="w-[480px] h-[480px] object-contain">
                     </div>
                 </div>
             </div>
             
             <h1 class="text-5xl md:text-7xl font-bold mb-4">
-                <span class="text-neon-cyan animate-glow">Cyber</span>
-                <span class="text-neon-magenta animate-glow" style="animation-delay: 0.5s;">Dev</span>
+                <span class="text-neon-cyan">Animatech</span>
             </h1>
             
             <p class="text-xl md:text-2xl text-gray-300 mb-8">
-                IT Specialist • 3D Printing • Linux Expert
+                Hardware is Someone
             </p>
             
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#services" class="px-8 py-3 bg-neon-cyan text-dark-bg font-bold rounded-full hover:bg-neon-cyan/80 transition-all duration-300 transform hover:scale-105 animate-glow">
+                <a href="#services" class="px-8 py-3 border-2 border-neon-cyan text-neon-cyan font-bold rounded-full hover:bg-neon-cyan hover:text-dark-bg transition-all duration-300 transform hover:scale-105">
                     Замовити послугу
                 </a>
                 <a href="#about" class="px-8 py-3 border-2 border-neon-magenta text-neon-magenta font-bold rounded-full hover:bg-neon-magenta hover:text-dark-bg transition-all duration-300 transform hover:scale-105">
@@ -154,24 +157,12 @@
                         </p>
                     </div>
                     
-                    <div class="p-6 bg-dark-secondary/50 border border-neon-yellow/30 rounded-lg">
-                        <h3 class="text-2xl font-bold text-neon-yellow mb-4">Linux Expert</h3>
+                    <div class="p-6 bg-dark-secondary/50 border border-neon-accent/30 rounded-lg">
+                        <h3 class="text-2xl font-bold text-neon-accent mb-4">Linux Expert</h3>
                         <p class="text-gray-300">
                             Глибоке знання Linux систем, налаштування серверів, оптимізація продуктивності, 
                             безпека та автоматизація процесів.
                         </p>
-                    </div>
-                </div>
-                
-                <div class="flex justify-center">
-                    <div class="relative">
-                        <div class="w-64 h-64 bg-gradient-to-br from-neon-cyan to-neon-magenta rounded-full animate-float"></div>
-                        <div class="absolute inset-4 bg-dark-bg rounded-full flex items-center justify-center">
-                            <div class="text-center">
-                                <i data-lucide="code" class="w-16 h-16 text-neon-cyan mx-auto mb-2"></i>
-                                <p class="text-neon-magenta font-bold">Full Stack</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -202,9 +193,9 @@
                     <p class="text-gray-300">Друк запасних частин та компонентів для техніки</p>
                 </div>
                 
-                <div class="p-6 bg-dark-bg/50 border border-neon-yellow/30 rounded-lg hover:border-neon-yellow transition-all duration-300 transform hover:scale-105">
-                    <i data-lucide="star" class="w-12 h-12 text-neon-yellow mb-4"></i>
-                    <h3 class="text-xl font-bold text-neon-yellow mb-3">Кастомні вироби</h3>
+                <div class="p-6 bg-dark-bg/50 border border-neon-accent/30 rounded-lg hover:border-neon-accent transition-all duration-300 transform hover:scale-105">
+                    <i data-lucide="star" class="w-12 h-12 text-neon-accent mb-4"></i>
+                    <h3 class="text-xl font-bold text-neon-accent mb-3">Кастомні вироби</h3>
                     <p class="text-gray-300">Унікальні вироби за вашим дизайном або розробка з нуля</p>
                 </div>
             </div>
@@ -296,17 +287,17 @@
                 </article>
                 
                 <!-- Blog Post 3 -->
-                <article class="p-6 bg-dark-secondary/50 border border-neon-yellow/30 rounded-lg hover:border-neon-yellow transition-all duration-300">
+                <article class="p-6 bg-dark-secondary/50 border border-neon-accent/30 rounded-lg hover:border-neon-accent transition-all duration-300">
                     <div class="flex items-center mb-4">
-                        <i data-lucide="code" class="w-8 h-8 text-neon-yellow mr-3"></i>
-                        <h3 class="text-xl font-bold text-neon-yellow">Web Development Trends</h3>
+                        <i data-lucide="code" class="w-8 h-8 text-neon-accent mr-3"></i>
+                        <h3 class="text-xl font-bold text-neon-accent">Web Development Trends</h3>
                     </div>
                     <p class="text-gray-300 mb-4">
                         Сучасні тренди у веб-розробці та технології, які варто вивчити у 2024 році...
                     </p>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-400">05.03.2024</span>
-                        <a href="#" class="text-neon-yellow hover:text-neon-cyan transition-colors">Читати →</a>
+                        <a href="#" class="text-neon-accent hover:text-neon-cyan transition-colors">Читати →</a>
                     </div>
                 </article>
             </div>
@@ -350,8 +341,8 @@
                 </a>
             </div>
             <p class="text-gray-400">
-                © 2024 CyberDev. All rights reserved. | Powered by 
-                <span class="text-neon-cyan">Neon Technology</span>
+                © 2026 Animatech. All rights reserved. | Powered by 
+                <span class="text-neon-cyan">Cascade AI Assistant</span>
             </p>
         </div>
     </footer>

@@ -65,6 +65,117 @@ function createMatrixRain() {
     document.body.appendChild(canvas);
 }
 
+// Circuit board animation with chips and signals
+function createCircuitBoard() {
+    const container = document.createElement('div');
+    container.className = 'circuit-paths';
+    container.style.position = 'fixed';
+    container.style.top = '0';
+    container.style.left = '0';
+    container.style.width = '100%';
+    container.style.height = '100%';
+    container.style.pointerEvents = 'none';
+    container.style.zIndex = '1';
+    
+    // Add circuit board grid
+    const board = document.createElement('div');
+    board.className = 'circuit-board';
+    container.appendChild(board);
+    
+    // Create circuit paths (wires)
+    const paths = [];
+    
+    // Horizontal paths
+    for (let i = 0; i < 12; i++) {
+        const path = document.createElement('div');
+        path.className = 'circuit-path circuit-path-horizontal';
+        path.style.top = Math.random() * 100 + '%';
+        path.style.left = Math.random() * 80 + '%';
+        path.style.width = Math.random() * 150 + 50 + 'px';
+        container.appendChild(path);
+        paths.push({element: path, type: 'horizontal'});
+    }
+    
+    // Vertical paths
+    for (let i = 0; i < 8; i++) {
+        const path = document.createElement('div');
+        path.className = 'circuit-path circuit-path-vertical';
+        path.style.left = Math.random() * 100 + '%';
+        path.style.top = Math.random() * 80 + '%';
+        path.style.height = Math.random() * 150 + 50 + 'px';
+        container.appendChild(path);
+        paths.push({element: path, type: 'vertical'});
+    }
+    
+    // Create chips (microchips)
+    const chips = [];
+    for (let i = 0; i < 15; i++) {
+        const chip = document.createElement('div');
+        chip.className = 'circuit-chip';
+        chip.style.top = Math.random() * 90 + 5 + '%';
+        chip.style.left = Math.random() * 90 + 5 + '%';
+        container.appendChild(chip);
+        chips.push(chip);
+    }
+    
+    // Create signal particles that travel along paths
+    function createSignal() {
+        if (paths.length === 0) return;
+        
+        const randomPath = paths[Math.floor(Math.random() * paths.length)];
+        const particle = document.createElement('div');
+        particle.className = 'signal-particle';
+        
+        const duration = 2000 + Math.random() * 2000; // 2-4 seconds
+        particle.style.animation = `signal-flow ${duration}ms linear`;
+        
+        if (randomPath.type === 'horizontal') {
+            const rect = randomPath.element.getBoundingClientRect();
+            particle.style.left = rect.left + 'px';
+            particle.style.top = rect.top + rect.height/2 - 2 + 'px';
+            
+            // Animate along the path
+            let progress = 0;
+            const animate = () => {
+                progress += 16 / duration; // 60fps
+                if (progress <= 1) {
+                    const x = rect.left + (rect.width * progress);
+                    particle.style.left = x + 'px';
+                    requestAnimationFrame(animate);
+                } else {
+                    particle.remove();
+                }
+            };
+            animate();
+        } else {
+            const rect = randomPath.element.getBoundingClientRect();
+            particle.style.left = rect.left + rect.width/2 - 2 + 'px';
+            particle.style.top = rect.top + 'px';
+            
+            // Animate along vertical path
+            let progress = 0;
+            const animate = () => {
+                progress += 16 / duration;
+                if (progress <= 1) {
+                    const y = rect.top + (rect.height * progress);
+                    particle.style.top = y + 'px';
+                    requestAnimationFrame(animate);
+                } else {
+                    particle.remove();
+                }
+            };
+            animate();
+        }
+        
+        container.appendChild(particle);
+    }
+    
+    // Create signals periodically
+    setInterval(createSignal, 300);
+    
+    document.body.appendChild(container);
+}
+
 // Particle system
 class ParticleSystem {
     constructor(container) {
@@ -182,11 +293,8 @@ function initParallax() {
 
 // Initialize animations when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Add matrix rain to hero section
-    const heroSection = document.getElementById('home');
-    if (heroSection) {
-        createMatrixRain();
-    }
+    // Add circuit board animation
+    createCircuitBoard();
     
     // Initialize particle system for hero section
     if (heroSection) {

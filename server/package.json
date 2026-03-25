@@ -1,7 +1,7 @@
 {
-  "name": "cyberdev-server",
+  "name": "animatech-server",
   "version": "1.0.0",
-  "description": "Backend server for CyberDev personal website",
+  "description": "Backend server for Animatech - Living AI & Robotics platform",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -28,6 +28,6 @@
     "linux",
     "it"
   ],
-  "author": "CyberDev",
+  "author": "Animatech",
   "license": "MIT"
 }
