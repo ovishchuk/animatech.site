@@ -24,7 +24,7 @@ app.use(helmet({
 
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? 'https://ovishchuk.duckdns.org' 
+        ? 'https://animatech.duckdns.org' 
         : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://192.168.0.104:3000'],
     credentials: true
 }));

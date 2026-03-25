@@ -16,11 +16,11 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-DOMAIN="ovishchuk.duckdns.org"
-PROJECT_DIR="/var/www/ovishchuk.duckdns.org"
+DOMAIN="animatech.duckdns.org"
+PROJECT_DIR="/var/www/animatech"
 SERVICE_NAME="animatech"
 NODE_VERSION="18.x"
-REPO_URL="https://github.com/ovishchuk/ovishchuk.site.git"
+REPO_URL="https://github.com/ovishchuk/animatech.site.git"
 PROJECT_USER="shur"
 PROJECT_GROUP="shur"
 
@@ -316,7 +316,7 @@ create_update_script() {
 # Animatech Update Script
 set -e
 
-PROJECT_DIR="/var/www/ovishchuk.duckdns.org"
+PROJECT_DIR="/var/www/animatech"
 SERVICE_NAME="animatech"
 PROJECT_USER="shur"
 
