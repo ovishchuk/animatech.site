@@ -2,7 +2,7 @@
 
 # =============================================================================
 # Animatech Deployment Script for Ubuntu 25.04
-# Domain: ovishchuk.duckdns.org
+# Domain: animatech.duckdns.org
 # Author: Cascade AI Assistant
 # =============================================================================
 
