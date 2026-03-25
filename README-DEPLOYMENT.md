@@ -155,7 +155,9 @@ sudo /var/www/ovishchuk.duckdns.org/update.sh
 ### Ручне оновлення
 ```bash
 cd /var/www/ovishchuk.duckdns.org
-sudo -u www-data git pull origin main
+sudo -u www-data git fetch origin
+sudo -u www-data git reset --hard origin/main
+sudo -u www-data git clean -fd
 cd server
 sudo -u www-data npm install
 sudo systemctl restart animatech

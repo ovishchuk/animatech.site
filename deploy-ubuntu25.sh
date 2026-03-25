@@ -127,19 +127,24 @@ clone_repository() {
     # Temporarily change to project directory
     cd "$PROJECT_DIR"
     
-    # Remove existing repository if exists
+    # Check if repository already exists
     if [ -d ".git" ]; then
-        sudo rm -rf .git
+        log "Repository already exists, pulling latest changes..."
+        # Pull latest changes
+        sudo -u www-data git fetch origin
+        sudo -u www-data git reset --hard origin/main
+        sudo -u www-data git clean -fd
+    else
+        log "Cloning repository for the first time..."
+        # Clone repository
+        sudo -u www-data git clone "$REPO_URL" .
     fi
     
-    # Clone repository
-    sudo -u www-data git clone "$REPO_URL" .
-    
-    # Install npm dependencies
+    # Install/update npm dependencies
     cd server
     sudo -u www-data npm install
     
-    log "Repository cloned and dependencies installed"
+    log "Repository updated and dependencies installed"
 }
 
 setup_environment() {
@@ -321,7 +326,9 @@ echo "Updating Animatech..."
 
 # Pull latest changes
 cd "$PROJECT_DIR"
-sudo -u www-data git pull origin main
+sudo -u www-data git fetch origin
+sudo -u www-data git reset --hard origin/main
+sudo -u www-data git clean -fd
 
 # Install new dependencies
 cd server
