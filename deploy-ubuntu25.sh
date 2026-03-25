@@ -124,20 +124,20 @@ setup_project_directory() {
 clone_repository() {
     log "Cloning repository from GitHub..."
     
-    # Temporarily change to project directory
-    cd "$PROJECT_DIR"
-    
-    # Check if repository already exists
-    if [ -d ".git" ]; then
+    # Check if repository already exists in project directory
+    if [ -d "$PROJECT_DIR/.git" ]; then
         log "Repository already exists, pulling latest changes..."
+        # Change to project directory
+        cd "$PROJECT_DIR"
         # Pull latest changes
         sudo -u www-data git fetch origin
         sudo -u www-data git reset --hard origin/main
         sudo -u www-data git clean -fd
     else
         log "Cloning repository for the first time..."
-        # Clone repository
-        sudo -u www-data git clone "$REPO_URL" .
+        # Clone repository to project directory
+        sudo -u www-data git clone "$REPO_URL" "$PROJECT_DIR"
+        cd "$PROJECT_DIR"
     fi
     
     # Install/update npm dependencies
