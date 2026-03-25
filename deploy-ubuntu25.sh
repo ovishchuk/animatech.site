@@ -21,6 +21,8 @@ PROJECT_DIR="/var/www/ovishchuk.duckdns.org"
 SERVICE_NAME="animatech"
 NODE_VERSION="18.x"
 REPO_URL="https://github.com/ovishchuk/ovishchuk.site.git"
+PROJECT_USER="shur"
+PROJECT_GROUP="shur"
 
 # Logging
 LOG_FILE="/var/log/animatech-deploy.log"
@@ -109,13 +111,8 @@ setup_project_directory() {
     sudo mkdir -p "$PROJECT_DIR"
     sudo mkdir -p "$PROJECT_DIR/logs"
     
-    # Create project user if doesn't exist
-    if ! id "www-data" &>/dev/null; then
-        sudo useradd -r -s /bin/false www-data
-    fi
-    
-    # Set permissions
-    sudo chown -R www-data:www-data "$PROJECT_DIR"
+    # Set permissions for shur user
+    sudo chown -R "$PROJECT_USER:$PROJECT_GROUP" "$PROJECT_DIR"
     sudo chmod -R 755 "$PROJECT_DIR"
     
     log "Project directory created: $PROJECT_DIR"
@@ -130,19 +127,19 @@ clone_repository() {
         # Change to project directory
         cd "$PROJECT_DIR"
         # Pull latest changes
-        sudo -u www-data git fetch origin
-        sudo -u www-data git reset --hard origin/main
-        sudo -u www-data git clean -fd
+        sudo -u "$PROJECT_USER" git fetch origin
+        sudo -u "$PROJECT_USER" git reset --hard origin/main
+        sudo -u "$PROJECT_USER" git clean -fd
     else
         log "Cloning repository for the first time..."
         # Clone repository to project directory
-        sudo -u www-data git clone "$REPO_URL" "$PROJECT_DIR"
+        sudo -u "$PROJECT_USER" git clone "$REPO_URL" "$PROJECT_DIR"
         cd "$PROJECT_DIR"
     fi
     
     # Install/update npm dependencies
     cd server
-    sudo -u www-data npm install
+    sudo -u "$PROJECT_USER" npm install
     
     log "Repository updated and dependencies installed"
 }
@@ -153,7 +150,7 @@ setup_environment() {
     cd "$PROJECT_DIR/server"
     
     # Create .env file
-    sudo -u www-data cat > .env << EOF
+    sudo -u "$PROJECT_USER" cat > .env << EOF
 NODE_ENV=production
 PORT=3000
 HOST=0.0.0.0
@@ -162,7 +159,7 @@ EOF
     
     # Set permissions
     sudo chmod 600 .env
-    sudo chown www-data:www-data .env
+    sudo chown "$PROJECT_USER:$PROJECT_GROUP" .env
     
     log "Environment configured"
 }
@@ -216,7 +213,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=www-data
+User=$PROJECT_USER
 WorkingDirectory=$PROJECT_DIR/server
 ExecStart=/usr/bin/node app.js
 Restart=always
@@ -258,7 +255,7 @@ $PROJECT_DIR/logs/*.log {
     compress
     delaycompress
     notifempty
-    create 644 www-data www-data
+    create 644 $PROJECT_USER $PROJECT_GROUP
     postrotate
         systemctl reload animatech
     endscript
@@ -313,7 +310,7 @@ test_deployment() {
 create_update_script() {
     log "Creating update script..."
     
-    sudo cat > "$PROJECT_DIR/update.sh" << 'EOF'
+    sudo cat > "$PROJECT_DIR/update.sh" << EOF
 #!/bin/bash
 
 # Animatech Update Script
@@ -321,27 +318,28 @@ set -e
 
 PROJECT_DIR="/var/www/ovishchuk.duckdns.org"
 SERVICE_NAME="animatech"
+PROJECT_USER="shur"
 
 echo "Updating Animatech..."
 
 # Pull latest changes
-cd "$PROJECT_DIR"
-sudo -u www-data git fetch origin
-sudo -u www-data git reset --hard origin/main
-sudo -u www-data git clean -fd
+cd "\$PROJECT_DIR"
+sudo -u "\$PROJECT_USER" git fetch origin
+sudo -u "\$PROJECT_USER" git reset --hard origin/main
+sudo -u "\$PROJECT_USER" git clean -fd
 
 # Install new dependencies
 cd server
-sudo -u www-data npm install
+sudo -u "\$PROJECT_USER" npm install
 
 # Restart service
-sudo systemctl restart "$SERVICE_NAME"
+sudo systemctl restart "\$SERVICE_NAME"
 
 echo "Update completed successfully!"
 EOF
     
     sudo chmod +x "$PROJECT_DIR/update.sh"
-    sudo chown www-data:www-data "$PROJECT_DIR/update.sh"
+    sudo chown "$PROJECT_USER:$PROJECT_GROUP" "$PROJECT_DIR/update.sh"
     
     log "Update script created"
 }
