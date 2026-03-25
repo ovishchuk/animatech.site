@@ -95,7 +95,7 @@ install_system_dependencies() {
     
     # List of required packages
     local required_packages=("curl" "wget" "git" "nginx" "ufw" "software-properties-common" 
-                             "apt-transport-https" "ca-certificates" "gnupg" "lsb-release" "build-essential")
+                             "apt-transport-https" "ca-certificates" "gnupg" "lsb-release" "build-essential" "certbot" "python3-certbot-nginx")
     
     local packages_to_install=()
     
@@ -588,7 +588,8 @@ show_status() {
     echo
     echo "=== DEPLOYMENT STATUS ==="
     echo "🌐 Website: http://$DOMAIN"
-    echo "📱 Admin Panel: http://$DOMAIN/admin"
+    echo "� HTTPS: https://$DOMAIN (SSL needed)"
+    echo "�� Admin Panel: http://$DOMAIN/admin"
     echo "📁 Project Directory: $PROJECT_DIR"
     echo "📝 Logs: sudo journalctl -u animatech -f"
     echo "🔄 Update: $PROJECT_DIR/update.sh"
@@ -600,10 +601,14 @@ show_status() {
     sudo ss -tlnp | grep -E ':(80|3000)\s'
     echo
     echo "=== NEXT STEPS ==="
-    echo "1. Configure DNS: Point $DOMAIN to this server IP"
-    echo "2. Setup SSL: sudo certbot --nginx -d $DOMAIN -d www.$DOMAIN"
-    echo "3. Monitor: sudo journalctl -u animatech -f"
-    echo "4. Update: $PROJECT_DIR/update.sh"
+    echo "1. ✅ Configure DNS: Point $DOMAIN to this server IP"
+    echo "2. 🔒 Setup SSL: sudo certbot --nginx -d $DOMAIN -d www.$DOMAIN"
+    echo "3. 🔄 Restart Nginx: sudo systemctl restart nginx"
+    echo "4. 📊 Monitor: sudo journalctl -u animatech -f"
+    echo "5. 🔄 Update: $PROJECT_DIR/update.sh"
+    echo
+    echo "=== SSL SETUP COMMAND ==="
+    echo "sudo certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos --email admin@$DOMAIN"
 }
 
 # Main execution
