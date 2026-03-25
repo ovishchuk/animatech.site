@@ -89,37 +89,53 @@ document.addEventListener('DOMContentLoaded', function() {
     lucide.createIcons();
     
     // Initialize animations from animations.js
-    if (typeof createCircuitBoard === 'function') {
+    try {
         createCircuitBoard();
+    } catch (e) {
+        console.log('Circuit board animation not available:', e);
     }
     
     // Initialize particle system for hero section
     const heroSection = document.getElementById('home');
-    if (heroSection && typeof ParticleSystem === 'function') {
-        new ParticleSystem(heroSection);
+    if (heroSection) {
+        try {
+            new ParticleSystem(heroSection);
+        } catch (e) {
+            console.log('Particle system not available:', e);
+        }
     }
     
     // Add glitch effect to neon text
     const neonTexts = document.querySelectorAll('.text-neon-glow');
-    if (typeof addGlitchEffect === 'function') {
+    try {
         neonTexts.forEach(text => {
             addGlitchEffect(text);
         });
+    } catch (e) {
+        console.log('Glitch effect not available:', e);
     }
     
     // Initialize neon signs controller
-    if (typeof NeonSignsController === 'function') {
+    try {
         new NeonSignsController();
+    } catch (e) {
+        console.log('Neon signs controller not available:', e);
     }
     
     // Initialize parallax effects
-    if (typeof initParallax === 'function') {
+    try {
         initParallax();
+    } catch (e) {
+        console.log('Parallax not available:', e);
     }
     
     // Initialize custom cursor
-    if (window.innerWidth > 768 && typeof initCustomCursor === 'function') {
-        initCustomCursor();
+    if (window.innerWidth > 768) {
+        try {
+            initCustomCursor();
+        } catch (e) {
+            console.log('Custom cursor not available:', e);
+        }
     }
     
     // Add entrance animations

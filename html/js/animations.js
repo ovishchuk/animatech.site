@@ -412,32 +412,8 @@ function initParallax() {
     });
 }
 
-// Initialize neon signs when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Add circuit board animation
-    createCircuitBoard();
-    
-    // Initialize particle system for hero section
-    const heroSection = document.getElementById('home');
-    if (heroSection) {
-        new ParticleSystem(heroSection);
-    }
-    
-    // Add glitch effect to neon text
-    const neonTexts = document.querySelectorAll('.text-neon-glow');
-    neonTexts.forEach(text => {
-        addGlitchEffect(text);
-    });
-    
-    // Initialize neon signs controller
-    new NeonSignsController();
-    
-    // Initialize parallax effects
-    initParallax();
-    
-    // Initialize smooth scrolling
-    initSmoothScroll();
-});
+// Remove duplicate DOMContentLoaded listener since it's handled in main.js
+// All animations will be initialized from main.js
 
 // Smooth scrolling for navigation links
 function initSmoothScroll() {
