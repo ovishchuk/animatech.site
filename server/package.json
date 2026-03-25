@@ -1,0 +1,33 @@
+{
+  "name": "cyberdev-server",
+  "version": "1.0.0",
+  "description": "Backend server for CyberDev personal website",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "init-db": "node database.js init"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^6.8.1",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "cyberpunk",
+    "portfolio",
+    "3d-printing",
+    "linux",
+    "it"
+  ],
+  "author": "CyberDev",
+  "license": "MIT"
+}
