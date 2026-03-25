@@ -321,7 +321,8 @@ setup_firewall() {
 create_systemd_service() {
     log "Creating systemd service..."
     
-    sudo cat > /etc/systemd/system/animatech.service << EOF
+    # Create service file using sudo with tee
+    sudo tee /etc/systemd/system/animatech.service > /dev/null << EOF
 [Unit]
 Description=Animatech Server
 After=network.target
@@ -362,7 +363,8 @@ EOF
 setup_log_rotation() {
     log "Setting up log rotation..."
     
-    sudo cat > /etc/logrotate.d/animatech << EOF
+    # Create logrotate config using sudo with tee
+    sudo tee /etc/logrotate.d/animatech > /dev/null << EOF
 $PROJECT_DIR/logs/*.log {
     daily
     missingok
@@ -425,13 +427,14 @@ test_deployment() {
 create_update_script() {
     log "Creating update script..."
     
-    sudo cat > "$PROJECT_DIR/update.sh" << EOF
+    # Create update script using sudo with tee
+    sudo tee "$PROJECT_DIR/update.sh" > /dev/null << EOF
 #!/bin/bash
 
 # Animatech Update Script
 set -e
 
-PROJECT_DIR="/var/www/animatech"
+PROJECT_DIR="/var/www/animatech.site"
 SERVICE_NAME="animatech"
 PROJECT_USER="shur"
 
