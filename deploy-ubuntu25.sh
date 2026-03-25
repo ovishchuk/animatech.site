@@ -51,6 +51,22 @@ else
     log "Using default project directory: $PROJECT_DIR"
 fi
 
+# Ensure proper ownership of the project directory
+ensure_ownership() {
+    log "Checking directory ownership..."
+    
+    if [ "$(stat -c '%U:%G' "$PROJECT_DIR")" != "$PROJECT_USER:$PROJECT_GROUP" ]; then
+        log "Setting ownership of $PROJECT_DIR to $PROJECT_USER:$PROJECT_GROUP"
+        sudo chown -R "$PROJECT_USER:$PROJECT_GROUP" "$PROJECT_DIR"
+        log "✓ Ownership updated successfully"
+    else
+        log "✓ Directory ownership is already correct"
+    fi
+}
+
+# Call ownership function immediately
+ensure_ownership
+
 check_sudo() {
     if ! sudo -n true 2>/dev/null; then
         log "Requesting sudo privileges..."
