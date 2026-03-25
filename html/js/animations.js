@@ -250,6 +250,127 @@ class ParticleSystem {
     }
 }
 
+// About Section Neon Signs Animation
+class NeonSignsController {
+    constructor() {
+        this.blocks = document.querySelectorAll('.about-block');
+        this.signs = document.querySelectorAll('.neon-sign');
+        this.currentIndex = 0;
+        this.intervalDuration = 3500; // 3.5 seconds
+        this.isAnimating = false;
+        this.autoPlayInterval = null;
+        
+        this.init();
+    }
+    
+    init() {
+        if (this.blocks.length === 0 || this.signs.length === 0) return;
+        
+        console.log('NeonSignsController initialized');
+        console.log('Blocks found:', this.blocks.length);
+        console.log('Signs found:', this.signs.length);
+        
+        // Start with first block and sign
+        this.showBlock(0);
+        
+        // Start automatic cycling
+        this.startAutoPlay();
+        
+        // Add hover interactions
+        this.addHoverInteractions();
+        
+        // Pause on page visibility change
+        this.addVisibilityListener();
+    }
+    
+    showBlock(index) {
+        if (this.isAnimating || index === this.currentIndex) return;
+        
+        console.log('Showing block:', index);
+        this.isAnimating = true;
+        
+        // Get current and next elements
+        const currentBlock = this.blocks[this.currentIndex];
+        const currentSign = this.signs[this.currentIndex];
+        const nextBlock = this.blocks[index];
+        const nextSign = this.signs[index];
+        
+        // Remove active class from current elements
+        currentBlock.classList.remove('active');
+        currentSign.classList.remove('active');
+        
+        // Add morphing out class to current sign
+        currentSign.classList.add('morphing-out');
+        
+        // After a short delay, show next elements
+        setTimeout(() => {
+            // Hide current sign completely
+            currentSign.classList.remove('morphing-out');
+            currentSign.classList.add('hidden');
+            
+            // Show next sign with morphing in effect
+            nextSign.classList.remove('hidden');
+            nextSign.classList.add('morphing-in');
+            
+            // Add active class to next elements
+            nextBlock.classList.add('active');
+            
+            // Remove morphing class and add active
+            setTimeout(() => {
+                nextSign.classList.remove('morphing-in');
+                nextSign.classList.add('active');
+                this.isAnimating = false;
+                console.log('Block transition completed:', index);
+            }, 800);
+        }, 400);
+        
+        this.currentIndex = index;
+    }
+    
+    nextBlock() {
+        const nextIndex = (this.currentIndex + 1) % this.blocks.length;
+        this.showBlock(nextIndex);
+    }
+    
+    startAutoPlay() {
+        console.log('Starting autoplay');
+        this.autoPlayInterval = setInterval(() => {
+            this.nextBlock();
+        }, this.intervalDuration);
+    }
+    
+    stopAutoPlay() {
+        console.log('Stopping autoplay');
+        if (this.autoPlayInterval) {
+            clearInterval(this.autoPlayInterval);
+            this.autoPlayInterval = null;
+        }
+    }
+    
+    addHoverInteractions() {
+        this.blocks.forEach((block, index) => {
+            block.addEventListener('mouseenter', () => {
+                this.stopAutoPlay();
+                this.showBlock(index);
+            });
+            
+            block.addEventListener('mouseleave', () => {
+                this.startAutoPlay();
+            });
+        });
+    }
+    
+    addVisibilityListener() {
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.stopAutoPlay();
+            } else {
+                this.startAutoPlay();
+            }
+        });
+    }
+}
+
 // Glitch effect for text
 function addGlitchEffect(element) {
     const originalText = element.textContent;
@@ -291,12 +412,13 @@ function initParallax() {
     });
 }
 
-// Initialize animations when DOM is loaded
+// Initialize neon signs when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Add circuit board animation
     createCircuitBoard();
     
     // Initialize particle system for hero section
+    const heroSection = document.getElementById('home');
     if (heroSection) {
         new ParticleSystem(heroSection);
     }
@@ -307,26 +429,40 @@ document.addEventListener('DOMContentLoaded', function() {
         addGlitchEffect(text);
     });
     
-    // Initialize parallax
+    // Initialize neon signs controller
+    new NeonSignsController();
+    
+    // Initialize parallax effects
     initParallax();
     
-    // Add hover sound effects (if audio files are available)
-    const interactiveElements = document.querySelectorAll('button, a, .cyber-card');
-    interactiveElements.forEach(element => {
-        element.addEventListener('mouseenter', () => {
-            // Add hover sound effect here if needed
-            element.style.transform = 'scale(1.05)';
-        });
-        
-        element.addEventListener('mouseleave', () => {
-            element.style.transform = 'scale(1)';
-        });
-    });
+    // Initialize smooth scrolling
+    initSmoothScroll();
+});
+
+// Smooth scrolling for navigation links
+function initSmoothScroll() {
+    const links = document.querySelectorAll('a[href^="#"]');
     
-    // Add loading animation
-    window.addEventListener('load', () => {
-        document.body.classList.add('loaded');
+    links.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const targetId = link.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
     });
+}
+
+// Add loading animation
+window.addEventListener('load', () => {
+    document.body.classList.add('loaded');
 });
 
 // Cyberpunk cursor effect

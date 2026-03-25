@@ -11,6 +11,7 @@ const Database = require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const HOST = '0.0.0.0'; // Listen on all interfaces
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 // Initialize database
@@ -24,7 +25,7 @@ app.use(helmet({
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
         ? 'https://ovishchuk.duckdns.org' 
-        : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+        : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://192.168.0.104:3000'],
     credentials: true
 }));
 
@@ -295,10 +296,11 @@ async function startServer() {
     try {
         await db.initialize();
         
-        app.listen(PORT, () => {
+        app.listen(PORT, HOST, () => {
             console.log(`🚀 Animatech server running on port ${PORT}`);
             console.log(`📱 Admin panel: http://localhost:${PORT}/admin`);
             console.log(`🌐 Website: http://localhost:${PORT}`);
+            console.log(`📱 Mobile access: http://192.168.0.104:${PORT}`);
             console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
             console.log(`🤖 Living AI & Robotics Platform`);
         });

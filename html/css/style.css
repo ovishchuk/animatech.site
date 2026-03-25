@@ -26,6 +26,145 @@ body {
     overflow-x: hidden;
 }
 
+/* Navigation Styles - FORCE OVERRIDE */
+nav.fixed {
+    position: fixed !important;
+    top: 0 !important;
+    width: 100% !important;
+    background-color: rgba(10, 10, 10, 0.9) !important;
+    backdrop-filter: blur(12px) !important;
+    z-index: 50 !important;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+}
+
+nav.fixed .container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 1rem !important;
+}
+
+nav.fixed .flex {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    height: 4rem !important;
+}
+
+nav.fixed .justify-between {
+    justify-content: space-between !important;
+}
+
+nav.fixed .items-center {
+    align-items: center !important;
+}
+
+nav.fixed .h-16 {
+    height: 4rem !important;
+}
+
+nav.fixed .space-x-2 > * {
+    margin-left: 0.5rem !important;
+}
+
+nav.fixed .space-x-8 > * {
+    margin-left: 2rem !important;
+}
+
+nav.fixed .text-gray-300 {
+    color: #d1d5db !important;
+}
+
+nav.fixed .hover\:text-neon-cyan:hover {
+    color: var(--neon-cyan) !important;
+}
+
+nav.fixed .text-neon-cyan {
+    color: var(--neon-cyan) !important;
+}
+
+nav.fixed .text-xl {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+}
+
+nav.fixed .font-bold {
+    font-weight: 700 !important;
+}
+
+nav.fixed .w-6 {
+    width: 1.5rem !important;
+}
+
+nav.fixed .h-6 {
+    height: 1.5rem !important;
+}
+
+nav.fixed .w-8 {
+    width: 2rem !important;
+}
+
+nav.fixed .h-8 {
+    height: 2rem !important;
+}
+
+nav.fixed .object-contain {
+    object-fit: contain !important;
+}
+
+nav.fixed .overflow-hidden {
+    overflow: hidden !important;
+}
+
+nav.fixed .hidden {
+    display: none !important;
+}
+
+nav.fixed .md\:flex {
+    display: none !important;
+}
+
+@media (min-width: 768px) {
+    nav.fixed .md\:flex {
+        display: flex !important;
+    }
+}
+
+nav.fixed .md\:hidden {
+    display: block !important;
+}
+
+@media (min-width: 768px) {
+    nav.fixed .md\:hidden {
+        display: none !important;
+    }
+}
+
+.nav-link {
+    position: relative;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    color: #d1d5db !important;
+}
+
+.nav-link:hover {
+    color: var(--neon-cyan) !important;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
 /* Custom Animations */
 @keyframes glow {
     0% {
@@ -194,6 +333,143 @@ body {
     }
 }
 
+/* About Section Neon Signs */
+.about-block {
+    transition: all 0.5s ease-in-out;
+}
+
+.about-block.active {
+    animation: block-pulse 3s ease-in-out !important;
+}
+
+.about-block[data-theme="it"].active {
+    border-color: var(--neon-cyan) !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3) !important;
+}
+
+.about-block[data-theme="3d"].active {
+    border-color: var(--neon-magenta) !important;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.3) !important;
+}
+
+.about-block[data-theme="linux"].active {
+    border-color: var(--neon-accent) !important;
+    box-shadow: 0 0 20px rgba(0, 204, 170, 0.3) !important;
+}
+
+.neon-signs-container {
+    position: relative;
+    height: 300px;
+}
+
+.neon-sign-wrapper {
+    position: relative;
+    width: 300px;
+    height: 200px;
+}
+
+.neon-sign {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.8s ease-in-out;
+}
+
+.neon-sign.active {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
+.neon-sign.morphing-out {
+    opacity: 0;
+    transform: scale(1.2) rotate(5deg);
+}
+
+.neon-text {
+    filter: drop-shadow(0 0 3px currentColor) 
+            drop-shadow(0 0 6px currentColor) 
+            drop-shadow(0 0 9px currentColor);
+    animation: neon-flicker 2s infinite alternate;
+}
+
+.neon-path {
+    filter: drop-shadow(0 0 2px currentColor) 
+            drop-shadow(0 0 4px currentColor) 
+            drop-shadow(0 0 6px currentColor);
+    animation: neon-flicker 2s infinite alternate;
+}
+
+.neon-fill {
+    filter: drop-shadow(0 0 2px currentColor) 
+            drop-shadow(0 0 4px currentColor) 
+            drop-shadow(0 0 6px currentColor);
+    animation: neon-flicker 2s infinite alternate;
+}
+
+@keyframes block-pulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.02);
+        filter: brightness(1.2);
+    }
+}
+
+@keyframes neon-flicker {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes sign-morph-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.6) rotate(-10deg);
+    }
+    50% {
+        transform: scale(1.1) rotate(2deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes sign-morph-out {
+    0% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+    50% {
+        transform: scale(1.1) rotate(-2deg);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.6) rotate(10deg);
+    }
+}
+
+.neon-sign.morphing-in {
+    animation: sign-morph-in 0.8s ease-in-out forwards;
+}
+
+.neon-sign.morphing-out {
+    animation: sign-morph-out 0.8s ease-in-out forwards;
+}
+
+.hidden {
+    display: none !important;
+}
+
 /* Navigation Styles */
 .nav-link {
     position: relative;
@@ -214,6 +490,27 @@ body {
 
 .nav-link:hover::after {
     width: 100%;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .neon-signs-container {
+        height: 200px;
+        margin-top: 2rem;
+    }
+    
+    .neon-sign-wrapper {
+        width: 250px;
+        height: 150px;
+    }
+    
+    .neon-sign {
+        transform: scale(0.7);
+    }
+    
+    .neon-sign.active {
+        transform: scale(0.7);
+    }
 }
 
 /* Neon Text Effects */
