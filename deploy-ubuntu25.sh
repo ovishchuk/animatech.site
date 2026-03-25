@@ -295,10 +295,64 @@ EOF
 setup_nginx() {
     log "Setting up Nginx configuration..."
     
-    # Enable the existing site
-    if [ ! -L "/etc/nginx/sites-enabled/ovishchuk" ]; then
-        sudo ln -sf /etc/nginx/sites-available/ovishchuk /etc/nginx/sites-enabled/
-    fi
+    # Create Nginx configuration for animatech.duckdns.org
+    sudo tee /etc/nginx/sites-available/animatech > /dev/null << EOF
+server {
+    listen 80;
+    server_name animatech.duckdns.org www.animatech.duckdns.org;
+    
+    root /var/www/animatech.site/html;
+    index index.html;
+    
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+    add_header Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; img-src 'self' data: https:; font-src 'self' https://fonts.googleapis.com;" always;
+    
+    # Gzip compression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css text/xml text/javascript application/javascript application/xml+rss application/json;
+    
+    # Static file caching
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    # API routes
+    location /api/ {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_cache_bypass \$http_upgrade;
+    }
+    
+    # Admin panel
+    location /admin {
+        try_files \$uri \$uri/ /index.html;
+    }
+    
+    # Main site
+    location / {
+        try_files \$uri \$uri/ /index.html;
+    }
+    
+    # Error pages
+    error_page 404 /index.html;
+}
+EOF
+    
+    # Enable the new site
+    sudo ln -sf /etc/nginx/sites-available/animatech /etc/nginx/sites-enabled/
     
     # Remove default site if exists
     sudo rm -f /etc/nginx/sites-enabled/default
