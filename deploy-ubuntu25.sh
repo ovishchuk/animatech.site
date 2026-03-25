@@ -119,29 +119,40 @@ setup_project_directory() {
 }
 
 clone_repository() {
-    log "Cloning repository from GitHub..."
+    log "Setting up repository..."
     
-    # Check if repository already exists in project directory
-    if [ -d "$PROJECT_DIR/.git" ]; then
-        log "Repository already exists, pulling latest changes..."
+    # Check if script is running from project directory
+    CURRENT_DIR=$(pwd)
+    if [[ "$CURRENT_DIR" == "$PROJECT_DIR" ]] && [ -d ".git" ]; then
+        log "Script is running from project directory, skipping clone/pull"
+        
+        # Install/update npm dependencies
+        cd server
+        sudo -u "$PROJECT_USER" npm install
+    elif [ -d "$PROJECT_DIR/.git" ]; then
+        log "Repository already exists in project directory, pulling latest changes..."
         # Change to project directory
         cd "$PROJECT_DIR"
         # Pull latest changes
         sudo -u "$PROJECT_USER" git fetch origin
         sudo -u "$PROJECT_USER" git reset --hard origin/main
         sudo -u "$PROJECT_USER" git clean -fd
+        
+        # Install/update npm dependencies
+        cd server
+        sudo -u "$PROJECT_USER" npm install
     else
         log "Cloning repository for the first time..."
         # Clone repository to project directory
         sudo -u "$PROJECT_USER" git clone "$REPO_URL" "$PROJECT_DIR"
         cd "$PROJECT_DIR"
+        
+        # Install/update npm dependencies
+        cd server
+        sudo -u "$PROJECT_USER" npm install
     fi
     
-    # Install/update npm dependencies
-    cd server
-    sudo -u "$PROJECT_USER" npm install
-    
-    log "Repository updated and dependencies installed"
+    log "Repository setup completed"
 }
 
 setup_environment() {
