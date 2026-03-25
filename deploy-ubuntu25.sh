@@ -17,7 +17,14 @@ NC='\033[0m' # No Color
 
 # Configuration
 DOMAIN="animatech.duckdns.org"
-PROJECT_DIR="/var/www/animatech"
+# Use current directory if we're in a git repo, otherwise use default
+if [ -d ".git" ]; then
+    PROJECT_DIR=$(pwd)
+    log "Using current directory as project directory: $PROJECT_DIR"
+else
+    PROJECT_DIR="/var/www/animatech"
+    log "Using default project directory: $PROJECT_DIR"
+fi
 SERVICE_NAME="animatech"
 NODE_VERSION="18.x"
 REPO_URL="https://github.com/ovishchuk/animatech.site.git"
@@ -107,15 +114,22 @@ install_nodejs() {
 setup_project_directory() {
     log "Setting up project directory..."
     
-    # Create project directory
-    sudo mkdir -p "$PROJECT_DIR"
-    sudo mkdir -p "$PROJECT_DIR/logs"
-    
-    # Set permissions for shur user
-    sudo chown -R "$PROJECT_USER:$PROJECT_GROUP" "$PROJECT_DIR"
-    sudo chmod -R 755 "$PROJECT_DIR"
-    
-    log "Project directory created: $PROJECT_DIR"
+    # Only create directory if we're not using current directory
+    if [ "$PROJECT_DIR" != "$(pwd)" ]; then
+        # Create project directory
+        sudo mkdir -p "$PROJECT_DIR"
+        sudo mkdir -p "$PROJECT_DIR/logs"
+        
+        # Set permissions for shur user
+        sudo chown -R "$PROJECT_USER:$PROJECT_GROUP" "$PROJECT_DIR"
+        sudo chmod -R 755 "$PROJECT_DIR"
+        
+        log "Project directory created: $PROJECT_DIR"
+    else
+        # Create logs directory in current location
+        mkdir -p logs
+        log "Using current directory, created logs subdirectory"
+    fi
 }
 
 clone_repository() {
@@ -160,19 +174,23 @@ setup_environment() {
     
     cd "$PROJECT_DIR/server"
     
-    # Create .env file
-    sudo -u "$PROJECT_USER" cat > .env << EOF
+    # Create .env file only if it doesn't exist
+    if [ ! -f ".env" ]; then
+        sudo -u "$PROJECT_USER" cat > .env << EOF
 NODE_ENV=production
 PORT=3000
 HOST=0.0.0.0
 JWT_SECRET=$(openssl rand -base64 32)
 EOF
-    
-    # Set permissions
-    sudo chmod 600 .env
-    sudo chown "$PROJECT_USER:$PROJECT_GROUP" .env
-    
-    log "Environment configured"
+        
+        # Set permissions
+        sudo chmod 600 .env
+        sudo chown "$PROJECT_USER:$PROJECT_GROUP" .env
+        
+        log "Environment file created"
+    else
+        log "Environment file already exists, skipping creation"
+    fi
 }
 
 setup_nginx() {
@@ -250,7 +268,7 @@ EOF
     
     # Enable and start service
     sudo systemctl enable animatech
-    sudo systemctl start animatech
+    sudo systemctl restart animatech  # Use restart instead of start to handle existing service
     
     log "Systemd service created and started"
 }
