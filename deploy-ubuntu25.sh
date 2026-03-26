@@ -370,19 +370,21 @@ EOF
 setup_firewall() {
     log "Configuring firewall..."
     
-    # Allow SSH
-    sudo ufw allow OpenSSH
+    # Allow SSH (to avoid locking yourself out)
+    sudo ufw allow ssh
     
-    # Allow HTTP
+    # Allow HTTP and HTTPS
     sudo ufw allow 80/tcp
+    sudo ufw allow 443/tcp
     
-    # Allow Node.js port (internal, but just in case)
+    # Allow Node.js app port (for local access)
     sudo ufw allow 3000/tcp
     
     # Enable firewall
     sudo ufw --force enable
     
     log "Firewall configured"
+    log "Open ports: SSH (22), HTTP (80), HTTPS (443), Node.js (3000)"
 }
 
 create_systemd_service() {
@@ -598,7 +600,15 @@ show_status() {
     sudo systemctl status animatech --no-pager -l
     echo
     echo "=== PORT STATUS ==="
-    sudo ss -tlnp | grep -E ':(80|3000)\s'
+    sudo ss -tlnp | grep -E ':(22|80|443|3000)\s'
+    echo
+    echo "=== FIREWALL STATUS ==="
+    sudo ufw status verbose
+    echo
+    echo "=== ROUTER FORWARDING CHECK ==="
+    echo "Make sure your router forwards:"
+    echo "  - Port 80  → Server IP (HTTP)"
+    echo "  - Port 443 → Server IP (HTTPS)"
     echo
     echo "=== NEXT STEPS ==="
     echo "1. ✅ Configure DNS: Point $DOMAIN to this server IP"
