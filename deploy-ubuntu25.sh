@@ -608,7 +608,7 @@ show_status() {
     echo "5. 🔄 Update: $PROJECT_DIR/update.sh"
     echo
     echo "=== SSL SETUP COMMAND ==="
-    echo "sudo certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos --email shur@animatech.duckdns.org"
+    echo "sudo certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos --email o.vishchuk@gmail.com"
 }
 
 # Main execution
